@@ -1,0 +1,18 @@
+h1{
+}
+#hideNewAchievement, #newAchievement{
+display:none;
+}
+
+.textButton { 
+     background:none!important;
+     border:none; 
+     padding:0!important;
+     font: inherit;
+     /*border is optional*/
+     cursor: pointer;
+     color:grey;
+}   
+.textButton:hover{
+    text-decoration:underline;
+}

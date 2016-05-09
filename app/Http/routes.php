@@ -19,3 +19,5 @@ Route::auth();
 Route::get('/home', 'HomeController@index');
 Route::resource('achievement', 'AchievementController');
 Route::resource('criteria', 'CriterionController');
+Route::resource('inventory', 'InventoryController');
+Route::resource('ProspectiveAchievement', 'ProspectiveAchievementController');

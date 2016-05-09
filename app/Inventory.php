@@ -1,15 +1,18 @@
 <?php
-
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Criterion extends Model
+class Inventory extends Model
 {
     use SoftDeletes;
     protected $dates =["deleted_at"];
+    //
     public function achievement(){
-        return $this->belongsTo("App\Achievement");
+        return $this->belongsTo('App\Achievement');
+    }
+    public function criterion(){
+        return $this->belongsTo('App\Criterion');
     }
 }

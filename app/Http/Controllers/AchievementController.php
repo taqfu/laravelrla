@@ -7,8 +7,11 @@ use Illuminate\Http\Request;
 use App\Http\Requests;
 
 use App\Achievement;
-use View;
+use App\Criterion;
+use App\Inventory;
+use App\ProspectiveAchievement;
 use Auth;
+use View;
 
 class AchievementController extends Controller
 {
@@ -19,9 +22,17 @@ class AchievementController extends Controller
      */
     public function index()
     {
-        return View::make('Achievement.index', [
-            "achievements"=>Achievement::get(),
-        ]);
+        if (Auth::user()){
+            return View::make('Achievement.index', [
+                "achievements"=>Achievement::get(),
+                "inventory"=>Inventory::where("user_id", Auth::user()->id)->where("achievement_id", ">", 0)->get(),   
+            ]);
+        } else if (!Auth::user()){
+            return View::make('Achievement.index', [
+                "achievements"=>Achievement::get(),
+                
+            ]);
+        }
         //
     }
 
@@ -32,7 +43,14 @@ class AchievementController extends Controller
      */
     public function create()
     {
-        //
+        $rel_row = ProspectiveAchievement::orderBy('election_id', "desc")->whereNotNull('completed_at')->first();
+        if ($rel_row==null){
+            $election_id = 1;
+        } else if($rel_row!=null) {
+            $election_id = $rel_row['election_id']+1;
+        }
+        
+        return View::make('Achievement.create');
     }
 
     /**
@@ -64,9 +82,20 @@ class AchievementController extends Controller
      */
     public function show($id)
     {
-        return View::make('Achievement.show', [
-            "achievement"=>Achievement::where("id", $id)->first(),
-        ]);
+        if (Auth::user()){
+            return View::make('Achievement.show', [
+                "achievement"=>Achievement::where("id", $id)->first(),
+                "criteria"=>Criterion::where("achievement_id", $id)->get(),
+                "owned_criteria"=>Inventory::where("criterion_id", ">", 0)->where("user_id", Auth::user()->id)->get(),
+                "achievement_owned"=>Inventory::where("achievement_id", $id)->where("user_id", Auth::user()->id)->first(),
+                "id"=> $id, "user_id"=>Auth::user()->id
+            ]);
+        } else {
+            return View::make('Achievement.show', [
+                "achievement"=>Achievement::where("id", $id)->first(),
+                "criteria"=>Criterion::where("achievement_id", $id)->get(),
+            ]);
+        }
     }
     
 
